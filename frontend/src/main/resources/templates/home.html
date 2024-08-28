@@ -1,0 +1,199 @@
+<!--<!DOCTYPE html>-->
+<!--<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">-->
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"></meta>
+    <meta content="width=device-width, initial-scale=1" name="viewport"></meta>
+
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/customStyle/customStyle.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/customStyle/buttonsStyle.css}" type="text/css"/>
+</head>
+<body>
+<div class="page-header">
+    <h1>TeamTwo Metrics Dashboard</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm">
+            <div class="panel">
+
+                <h2>Create A Member</h2>
+                <hr>
+                <!--           USE REST SERVICE TO CREATE MEMBER -->
+                <form action="#" method="post" th:action="@{/createMember}" th:object="${newMember}">
+                    <p>
+                        <label>Signum</label>
+                        <input th:field="*{signum}" type="text"/>
+                    </p>
+                    <p>
+                        <label>First Name</label>
+                        <input th:field="*{firstName}" type="text"/>
+                    </p>
+                    <p>
+                        <label>Last Name</label>
+                        <input th:field="*{lastName}" type="text"/>
+                    </p>
+                    <p>
+
+                        <button class="blue button" type="submit">Create</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Create A Team</h2>
+                <hr>
+                <!--   USE REST SERVICE TO CREATE TEAM -->
+                <form action="#" method="post" th:action="@{/createTeam}" th:object="${newTeam}">
+                    <p>
+                        <label>Name</label>
+                        <input th:field="*{name}" type="text"/>
+                    </p>
+                    <p>
+                        <button class="blue button" type="submit">Create</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Create A Program</h2>
+                <hr>
+                <!--   USE REST SERVICE TO CREATE MEMBER -->
+                <form action="#" method="post" th:action="@{/createProgram}" th:object="${newProgram}">
+                    <p>
+                        <label>Name</label>
+                        <input th:field="*{name}" type="text"/>
+                    </p>
+                    <p>
+                        <label>Gerrit Project Name</label>
+                        <input th:field="*{gerritName}" type="text"/>
+                    </p>
+                    <p>
+                        <label>Jenkins Project Name</label>
+                        <input th:field="*{jenkinsName}" type="text"/>
+                    </p>
+                    <p>
+                        <button class="blue button" type="submit">Create</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Add Member To Team</h2>
+                <hr>
+                <form action="#" method="post" th:action="@{/addMember}">
+                    <p>
+                        <label>Member</label>
+                        <select name="memberId">
+                            <option th:each="member : ${members}"
+                                    th:text="${member.firstName}"
+                                    th:value="${member.id}">Member name [offline]
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <label>Teams</label>
+                        <select name="teamId">
+                            <option th:each="team: ${teams}"
+                                    th:text="${team.name}"
+                                    th:value="${team.id}">Team Name [offline]
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <button class="blue button" type="submit">Add</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Add Team To Program</h2>
+                <hr>
+                <form action="#" method="post" th:action="@{/addTeam}">
+                    <p>
+                        <label>Member</label>
+                        <select name="teamId">
+                            <option th:each="team : ${teams}"
+                                    th:text="${team.name}"
+                                    th:value="${team.id}">Member name [offline]
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <label>Teams</label>
+                        <select name="programId">
+                            <option th:each="program: ${programs}"
+                                    th:text="${program.name}"
+                                    th:value="${program.id}">Program Name [offline]
+                            </option>
+                        </select>
+                    </p>
+                    <p>
+                        <button class="blue button" type="submit">Add</button>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Programs</h2>
+                <hr>
+                <div th:each="program: ${programs}">
+                    <a th:href="@{'/program/?pid=' + ${program.id}}"><h4 th:text="${program.name}">Team details
+                        [offline]</h4>
+                    </a>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Teams</h2>
+                <hr>
+                <div th:each="team: ${teams}">
+                    <h4 th:text="${team.name}">Team details [offline]</h4>
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="panel">
+                <h2>Members</h2>
+                <hr>
+                <div th:each="member: ${members}">
+                    <h4 th:text="${member.firstName} + ' ' + ${member.lastName} + ' (' + ${member.signum} + ')'">Team
+                        details
+                        [offline]</h4>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

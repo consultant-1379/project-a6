@@ -1,0 +1,34 @@
+version: '3'
+services:
+  main-controller:
+    build: main-controller/
+    depends_on:
+      - gerrit-ms
+      - jenkins-ms
+    networks:
+      - jenkins-net
+      - gerrit-net
+      - frontend-net
+  frontend:
+    build: frontend/
+    depends_on:
+      - main-controller
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend-net
+      - default
+  jenkins-ms:
+    build: jenkins-ms/
+    networks:
+      - jenkins-net
+  gerrit-ms:
+    build: gerrit-ms/
+    networks:
+      - gerrit-net
+networks:
+  jenkins-net:
+  gerrit-net:
+  frontend-net:
+
+

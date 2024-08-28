@@ -1,0 +1,248 @@
+<!--<!DOCTYPE html>-->
+<!--<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">-->
+
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+
+    <title>Program</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/customStyle/customStyle.css}" type="text/css"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/customStyle/buttonsStyle.css}" type="text/css"/>
+
+
+    <!--    <script src="jquery/jquery-1.12.4.js"></script>-->
+    <!--    <script src="bootstrap/js/bootstrap.js"></script>-->
+
+
+    <!--    <script type="text/javascript">-->
+    <script th:inline="javascript">
+    /*<![CDATA[*/
+
+        window.onload = function() {
+
+        var dps = [ [ ] ];
+        var chart = new CanvasJS.Chart("pieChartContainer", {
+            exportEnabled: true,
+            animationEnabled: true,
+            theme: "light2", // "light1", "dark1", "dark2"
+            title: {
+                text: "Build Success and Failure Rates"
+            },
+            subtitles: [{
+                text: /*[[${program.name}]]*/ 'default'
+<!--                ${program.name}-->
+            }],
+            data: [{
+                type: "pie",
+                yValueFormatString: "#,##0\"%\"",
+                indexLabel: "{label} - {y}",
+                dataPoints: dps[0]
+            }]
+        });
+
+        var yValue;
+        var totalBuilds = (/*[[${buildRates.SUCCESS}]]*/ 'default') + (/*[[${buildRates.FAILED}]]*/ 'default');
+        var percentageSuccess = ((/*[[${buildRates.SUCCESS}]]*/ 'default') / totalBuilds) * 100;
+        var percentageFailed = ((/*[[${buildRates.FAILED}]]*/ 'default') / totalBuilds) * 100;
+        var percentageUnknown = ((/*[[${buildRates.UNKNOWN}]]*/ 'default') / totalBuilds) * 100;
+        var label;
+
+                yValue = percentageSuccess;
+                label = "Success";
+                dps[0].push({
+                    label : label,
+                    y : yValue,
+                });
+
+                yValue = percentageFailed;
+                label = "Failed";
+                dps[0].push({
+                    label : label,
+                    y : yValue,
+                });
+
+                yValue = percentageUnknown;
+                label = "Unknown";
+                dps[0].push({
+                    label : label,
+                    y : yValue,
+                });
+
+        chart.render();
+
+
+        var dps = [ [ ], [ ], [ ], [ ] ];
+        var chart = new CanvasJS.Chart("barChartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Test Success And Failure Rates"
+            },
+             axisX:{
+
+             },
+            axisY: {
+                title: "Number of Tests",
+                includeZero: false
+
+            },
+            legend:{
+                cursor: "pointer",
+                itemclick: toggleDataSeries
+            },
+            toolTip: {
+                shared: true
+            },
+            data: [{
+
+                type: "stackedBar",
+                bevelEnabled: true,
+                name: "Passed Tests",
+                showInLegend: true,
+                xValueType: "dateTime",
+                xValueFormatString: "DD-MM-YYYY",
+                yValueFormatString: "#,##0 Tests",
+                dataPoints: dps[0]
+            },{
+                type: "stackedBar",
+                 bevelEnabled: true,
+                name: "Failed Tests",
+                showInLegend: true,
+                xValueType: "dateTime",
+                xValueFormatString: "DD-MM-YYYY",
+                yValueFormatString: "#,##0 Tests",
+                dataPoints: dps[1]
+            }]
+        });
+
+        function toggleDataSeries(e){
+            if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                e.dataSeries.visible = false;
+            }
+            else{
+                e.dataSeries.visible = true;
+            }
+            chart.render();
+        }
+
+        var xValue;
+        var yValue;
+        var index = 0;
+                 /*[# th:each="build : ${builds}"]*/
+
+                    xValue = /*[[${build.buildTimestamp}]]*/ 'default'
+                    xValue = Date.parse(xValue);
+                    console.log(xValue)
+
+                    dps[0].push({
+                        x : xValue,
+                        y : /*[[${build.totalPassedTestsPerBuild}]]*/ 'default'
+                 });
+                    dps[1].push({
+                        x : xValue,
+                        y : /*[[${build.totalFailedTestsPerBuild}]]*/ 'default'
+                 });
+                 index++
+                /*[/]*/
+
+        chart.render();
+        }
+    /*]]>*/
+
+
+    </script>
+
+</head>
+<body>
+<div class="page-header" style="display: flex;">
+    <h1 th:text="${program.name}"></h1>
+    <a href="/home"><h1 class="button red">Home</h1></a>
+    <a th:href="@{'?pid=' + ${program.id} + '&viewall=true'}"><h1 class="button blue">View All</h1></a>
+</div>
+
+<div class="container">
+    <div class="panel">
+        <div class="biggerh2">
+            Latest Builds
+        </div>
+        <hr>
+        <div style="display: flex;">
+
+        </div>
+        <div style="text-align: center">
+            <div class="row">
+                <div class="col-sm">
+                    <h4 th:text="'Success'"></h4>
+                    <div class="goodDot" th:text=${buildRates['SUCCESS']}></div>
+                </div>
+                <div class="col-sm">
+                    <h4 th:text="'Unknown'"></h4>
+                    <div class="unknownDot" th:text=${buildRates['UNKNOWN']}></div>
+                </div>
+                <div class="col-sm">
+                    <h4 th:text="'Failed'"></h4>
+                    <div class="badDot" th:text=${buildRates['FAILED']}></div>
+                </div>
+            </div>
+
+        </div>
+        <hr>
+        <div th:each="build: ${builds}">
+            <h4 th:text="'Build #' + ${build.buildNumber} + ' | ' + ${build.status}">Build details [offline]</h4>
+            <h4 th:text="'Tests Run: ' + ${build.totalTestsPerBuild} + ' | Passed: ' + ${build.totalPassedTestsPerBuild} + ', Failed: ' + ${build.totalFailedTestsPerBuild}">
+                Build details [offline]</h4>
+            <hr>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-sm">
+                    <div id="pieChartContainer" style="height: 370px; width: 100%;"></div>
+                </div>
+                <div class="col-sm">
+                    <div id="barChartContainer" style="height: 370px; width: 100%;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel">
+        <h2>Latest Commits</h2>
+        <div th:each="commit: ${commits}">
+            <h4 th:text="${#strings.substring(commit.commitId, 0, 8)} + ' | ' + ${#strings.abbreviate(commit.message,75)}">
+                Commit details [offline]</h4>
+            <h5 style="padding-left: 15px;"
+                th:text="'by ' + ${commit.authorName} + ' (' + ${commit.authorEmail} + ')'"></h5>
+            <hr>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="panel">
+        <h2>Teams</h2>
+        <div th:each="team: ${teams}">
+            <!--                <a th:href="@{'/team/?tid=' + ${team.id}}">-->
+            <h3 th:text="${team.name}">Team details [offline]</h3>
+            <!--                </a>-->
+        </div>
+    </div>
+</div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+</html>

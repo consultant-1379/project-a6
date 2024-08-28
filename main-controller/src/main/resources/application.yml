@@ -1,0 +1,48 @@
+--- # Dev Profile
+team-dashboard:
+  jenkins-url: "http://localhost:8082"
+  gerrit-url: "http://localhost:8083"
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:h2:mem:example
+    username: admin
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+resources:
+  db: "H2"
+--- # Docker-Dev Profile
+team-dashboard:
+  jenkins-url: "http://jenkins-ms:8082/"
+  gerrit-url: "http://gerrit-ms:8083/"
+spring:
+  profiles: docker-dev
+  datasource:
+    url: jdbc:h2:mem:example
+    username: admin
+    password:
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+
+resources:
+  db: "H2"
+--- # Production Profile (To be used with docker.)
+team-dashboard:
+  jenkins-url: "http://jenkins-ms:8082/"
+  gerrit-url: "http://gerrit-ms:8083/"
+spring:
+  profiles: production
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://docker_db:3306/test
+    username: admin
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+      generate-ddl: true

@@ -1,0 +1,15 @@
+--- # Dev Profile
+team-dashboard:
+  controller-url: "http://localhost:8081"
+spring:
+  profiles: dev
+--- # Dev Profile
+team-dashboard:
+  controller-url: "http://main-controller:8081"
+spring:
+  profiles: docker-dev
+--- # Production Profile (To be used with docker.)
+team-dashboard:
+  controller-url: "http://main-controller:8081"
+spring:
+  profiles: production
